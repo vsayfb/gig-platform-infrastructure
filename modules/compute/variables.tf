@@ -31,6 +31,18 @@ variable "private_services_sg_id" {
 }
 
 # Instances
+variable "app_port_range" {
+  description = "Core's port (from) and Chat's port (to) - the range the ALB is allowed to reach on private_services_sg, and what compute/'s target groups listen on."
+  type = object({
+    from = number
+    to   = number
+  })
+  default = {
+    from = 8080
+    to   = 8081
+  }
+}
+
 variable "ssh_key_name" {
   type = string
 }
@@ -71,7 +83,6 @@ variable "worker_sqs_access_policy_arn" {
 }
 
 # ALB
-
 variable "core_path_pattern" {
   description = "ALB listener rule path pattern routed to Core's target group."
   type        = list(string)

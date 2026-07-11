@@ -29,7 +29,7 @@ variable "ssh_key_name" {
 }
 
 variable "ssh_allowed_cidr" {
-  description = "Admin IP allowed to SSH into the NAT instance, as a /32. No default on purpose - must be set explicitly."
+  description = "Admin IP allowed to SSH into the NAT instance, as a /32."
   type        = string
 }
 
@@ -48,4 +48,16 @@ variable "db_backup_retention_days" {
   description = "Automated backup retention period, in days."
   type        = number
   default     = 1
+}
+
+variable "app_port_range" {
+  description = "Core's port (from) and Chat's port (to) - the range the ALB is allowed to reach on private_services_sg, and what compute/'s target groups listen on."
+  type = object({
+    from = number
+    to   = number
+  })
+  default = {
+    from = 8080
+    to   = 8081
+  }
 }

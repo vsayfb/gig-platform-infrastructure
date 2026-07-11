@@ -1,3 +1,7 @@
+output "compute_az" {
+  value = var.compute_az
+}
+
 # RDS
 
 output "rds_endpoint" {
