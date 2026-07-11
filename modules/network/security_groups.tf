@@ -40,11 +40,11 @@ resource "aws_security_group" "nat" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description     = "All traffic from private application services"
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    security_groups = [aws_security_group.private_services.id]
+    description = "All traffic from private application services"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    # security_groups = [aws_security_group.private_services.id]
   }
 
   ingress {
@@ -90,11 +90,11 @@ resource "aws_security_group" "private_services" {
   }
 
   egress {
-    description     = "Postgres to RDS"
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.rds.id]
+    description = "Postgres to RDS"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    # security_groups = [aws_security_group.rds.id]
   }
 
   egress {
@@ -116,11 +116,11 @@ resource "aws_security_group" "rds" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description     = "Postgres from Core/Chat/Worker"
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.private_services.id]
+    description = "Postgres from Core/Chat/Worker"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    # security_groups = [aws_security_group.private_services.id]
   }
 
   tags = merge(local.common_tags, {
