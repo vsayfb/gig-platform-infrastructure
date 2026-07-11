@@ -1,3 +1,8 @@
+output "compute_az" {
+  description = "AZ where application actually run."
+  value       = var.compute_az
+}
+
 output "rds_endpoint" {
   description = "Connection endpoint (host:port), for DATABASE_URL construction."
   value       = aws_db_instance.main.endpoint

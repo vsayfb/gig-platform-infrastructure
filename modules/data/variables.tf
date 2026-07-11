@@ -59,6 +59,11 @@ variable "db_name" {
   type        = string
 }
 
+variable "compute_az" {
+  description = "AZ where applications actually run - keep RDS in the same AZ as the app tier."
+  type        = string
+}
+
 variable "db_backup_retention_days" {
   description = "Automated backup retention period, in days. 0 disables automated backups entirely."
   type        = number
@@ -73,12 +78,6 @@ variable "db_skip_final_snapshot" {
 
 variable "db_deletion_protection" {
   description = "Prevent accidental terraform destroy of the RDS instance."
-  type        = bool
-  default     = false
-}
-
-variable "db_multi_az" {
-  description = "Whether to run a Multi-AZ standby. false per the roadmap's single-AZ decision."
   type        = bool
   default     = false
 }

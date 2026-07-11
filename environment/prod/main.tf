@@ -12,6 +12,7 @@ module "data" {
 
   db_name     = var.db_name
   name_prefix = var.name_prefix
+  compute_az  = var.azs[0]
 
   db_allocated_storage     = var.db_allocated_storage
   db_backup_retention_days = var.db_backup_retention_days

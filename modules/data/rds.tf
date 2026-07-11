@@ -47,10 +47,10 @@ resource "aws_db_instance" "main" {
   manage_master_user_password = true
 
   db_subnet_group_name   = aws_db_subnet_group.main.name
+  availability_zone      = var.compute_az
   vpc_security_group_ids = [var.rds_sg_id]
   publicly_accessible    = false
 
-  multi_az                = var.db_multi_az
   backup_retention_period = var.db_backup_retention_days
   apply_immediately       = var.db_apply_immediately
   skip_final_snapshot     = var.db_skip_final_snapshot

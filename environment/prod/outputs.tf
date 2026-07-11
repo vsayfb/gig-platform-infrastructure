@@ -19,3 +19,6 @@ output "rds_db_name" {
   value = module.data.rds_db_name
 }
 
+output "compute_az" {
+  value = module.data.compute_az
+}
