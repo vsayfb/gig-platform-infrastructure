@@ -27,7 +27,7 @@ variable "private_subnet_cidrs" {
 variable "nat_instance_type" {
   description = "Instance type for the self-managed NAT instance."
   type        = string
-  default     = "t3.nano"
+  default     = "t3.micro"
 }
 
 variable "ssh_key_name" {

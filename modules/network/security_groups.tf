@@ -40,14 +40,6 @@ resource "aws_security_group" "nat" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description = "All traffic from private application services"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    # security_groups = [aws_security_group.private_services.id]
-  }
-
-  ingress {
     description = "SSH from admin IP for tunnelling into the private subnet"
     from_port   = 22
     to_port     = 22
@@ -81,22 +73,6 @@ resource "aws_security_group" "private_services" {
     security_groups = [aws_security_group.alb.id]
   }
 
-  ingress {
-    description     = "SSH tunnelled in from the NAT instance"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = [aws_security_group.nat.id]
-  }
-
-  egress {
-    description = "Postgres to RDS"
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    # security_groups = [aws_security_group.rds.id]
-  }
-
   egress {
     description = "HTTPS out - SQS API, Groq, MongoDB Atlas, Grafana Cloud"
     from_port   = 443
@@ -115,15 +91,40 @@ resource "aws_security_group" "rds" {
   description = "RDS Postgres - reachable only from Core/Chat/Worker"
   vpc_id      = aws_vpc.main.id
 
-  ingress {
-    description = "Postgres from Core/Chat/Worker"
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    # security_groups = [aws_security_group.private_services.id]
-  }
-
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}-rds-sg"
   })
+}
+
+resource "aws_security_group_rule" "nat_ingress_from_private" {
+  description = "All traffic from private application services"
+  type        = "ingress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+
+  security_group_id        = aws_security_group.nat.id
+  source_security_group_id = aws_security_group.private_services.id
+}
+
+resource "aws_security_group_rule" "private_ssh_from_nat" {
+  description = "SSH tunnelled in from the NAT instance"
+  type        = "ingress"
+  from_port   = 22
+  to_port     = 22
+  protocol    = "tcp"
+
+  security_group_id        = aws_security_group.private_services.id
+  source_security_group_id = aws_security_group.nat.id
+}
+
+resource "aws_security_group_rule" "rds_ingress_from_private" {
+  description = "Postgres from Core/Chat/Worker"
+  type        = "ingress"
+  from_port   = 5432
+  to_port     = 5432
+  protocol    = "tcp"
+
+  security_group_id        = aws_security_group.rds.id
+  source_security_group_id = aws_security_group.private_services.id
 }
