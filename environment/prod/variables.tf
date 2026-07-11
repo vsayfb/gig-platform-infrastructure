@@ -32,3 +32,20 @@ variable "ssh_allowed_cidr" {
   description = "Admin IP allowed to SSH into the NAT instance, as a /32. No default on purpose - must be set explicitly."
   type        = string
 }
+
+variable "db_name" {
+  description = "Initial database name created on the instance."
+  type        = string
+}
+
+variable "db_allocated_storage" {
+  description = "Allocated storage in GB."
+  type        = number
+  default     = 20
+}
+
+variable "db_backup_retention_days" {
+  description = "Automated backup retention period, in days."
+  type        = number
+  default     = 1
+}
