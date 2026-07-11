@@ -1,7 +1,4 @@
-output "compute_az" {
-  description = "AZ where application actually run."
-  value       = var.compute_az
-}
+# RDS
 
 output "rds_endpoint" {
   description = "Connection endpoint (host:port), for DATABASE_URL construction."
@@ -31,6 +28,8 @@ output "rds_master_user_secret_arn" {
   value       = aws_db_instance.main.master_user_secret[0].secret_arn
 }
 
+# SQS
+
 output "category_events_queue_url" {
   value = aws_sqs_queue.category_events.url
 }
@@ -47,6 +46,8 @@ output "notification_events_queue_arn" {
   value = aws_sqs_queue.notification_events.arn
 }
 
+# IAM
+
 output "core_sqs_produce_policy_arn" {
   value = aws_iam_policy.core_sqs_produce.arn
 }
@@ -57,4 +58,8 @@ output "worker_sqs_access_policy_arn" {
 
 output "lambda_sqs_consume_policy_arn" {
   value = aws_iam_policy.lambda_sqs_consume.arn
+}
+
+output "rds_secret_read_policy_arn" {
+  value = aws_iam_policy.rds_secret_read.arn
 }

@@ -64,3 +64,21 @@ resource "aws_iam_policy" "lambda_sqs_consume" {
 
   tags = local.common_tags
 }
+
+resource "aws_iam_policy" "rds_secret_read" {
+  name        = "${local.name_prefix}-rds-secret-read"
+  description = "Read-only access to the RDS master user secret in Secrets Manager"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["secretsmanager:GetSecretValue"]
+        Resource = aws_db_instance.main.master_user_secret[0].secret_arn
+      }
+    ]
+  })
+
+  tags = local.common_tags
+}
