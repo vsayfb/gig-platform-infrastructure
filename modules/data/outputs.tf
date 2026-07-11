@@ -49,3 +49,7 @@ output "core_sqs_produce_policy_arn" {
 output "worker_sqs_access_policy_arn" {
   value = aws_iam_policy.worker_sqs_access.arn
 }
+
+output "lambda_sqs_consume_policy_arn" {
+  value = aws_iam_policy.lambda_sqs_consume.arn
+}
