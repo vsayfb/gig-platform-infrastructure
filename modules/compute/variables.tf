@@ -21,7 +21,30 @@ variable "alb_sg_id" {
   type = string
 }
 
-#Instances
+variable "compute_subnet_id" {
+  description = "The private subnet (AZ index 0) where applications actually launch."
+  type        = string
+}
+
+variable "private_services_sg_id" {
+  type = string
+}
+
+# Instances
+variable "ssh_key_name" {
+  type = string
+}
+
+variable "core_chat_instance_type" {
+  type    = string
+  default = "t3.small"
+}
+
+variable "worker_instance_type" {
+  type    = string
+  default = "t3.small"
+}
+
 variable "core_port" {
   description = "Port Core's HTTP server listens on."
   type        = number
