@@ -34,6 +34,19 @@ variable "chat_port" {
   default     = 8081
 }
 
+# Data inputs, from the data module
+variable "rds_secret_read_policy_arn" {
+  type = string
+}
+
+variable "core_sqs_produce_policy_arn" {
+  type = string
+}
+
+variable "worker_sqs_access_policy_arn" {
+  type = string
+}
+
 # ALB
 
 variable "core_path_pattern" {
