@@ -26,3 +26,5 @@ override.tf.json
 .DS_Store
 *~
 *.log
+
+backend.hcl
