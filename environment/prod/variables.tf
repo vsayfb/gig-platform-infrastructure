@@ -61,3 +61,14 @@ variable "app_port_range" {
     to   = 8081
   }
 }
+
+variable "grafana_cloud_opamp_endpoint" {
+  description = "Grafana Cloud Fleet Management OpAMP endpoint."
+  type        = string
+}
+
+variable "grafana_cloud_opamp_auth_token_parameter_name" {
+  description = "Name of the SSM SecureString parameter holding the OpAMP Authorization header value."
+  type        = string
+}
+

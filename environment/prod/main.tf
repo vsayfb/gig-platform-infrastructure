@@ -39,3 +39,11 @@ module "compute" {
 
   ssh_key_name = var.ssh_key_name
 }
+
+module "observability" {
+  source = "../../modules/observability"
+
+  name_prefix                                   = var.name_prefix
+  grafana_cloud_opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
+  grafana_cloud_opamp_endpoint                  = var.grafana_cloud_opamp_endpoint
+}
