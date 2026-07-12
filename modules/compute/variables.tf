@@ -87,6 +87,12 @@ variable "worker_sqs_access_policy_arn" {
   type = string
 }
 
+# Observability inputs
+variable "observability_read_policy_arn" {
+  type = string
+}
+
+
 # ALB
 variable "core_path_pattern" {
   description = "ALB listener rule path pattern routed to Core's target group."

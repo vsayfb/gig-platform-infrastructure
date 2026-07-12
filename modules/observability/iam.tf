@@ -23,13 +23,3 @@ resource "aws_iam_policy" "observability_read" {
 
   tags = local.common_tags
 }
-
-resource "aws_iam_role_policy_attachment" "core_chat_observability_read" {
-  role       = var.core_chat_role_name
-  policy_arn = aws_iam_policy.observability_read.arn
-}
-
-resource "aws_iam_role_policy_attachment" "worker_observability_read" {
-  role       = var.worker_role_name
-  policy_arn = aws_iam_policy.observability_read.arn
-}

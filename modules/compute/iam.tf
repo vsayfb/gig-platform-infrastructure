@@ -23,6 +23,11 @@ resource "aws_iam_role_policy_attachment" "core_chat_rds_secret" {
   policy_arn = var.rds_secret_read_policy_arn
 }
 
+resource "aws_iam_role_policy_attachment" "core_chat_observability_read" {
+  role       = aws_iam_role.core_chat.name
+  policy_arn = var.observability_read_policy_arn
+}
+
 resource "aws_iam_instance_profile" "core_chat" {
   name = "${local.name_prefix}-core-chat-profile"
   role = aws_iam_role.core_chat.name
@@ -53,7 +58,14 @@ resource "aws_iam_role_policy_attachment" "worker_rds_secret" {
   policy_arn = var.rds_secret_read_policy_arn
 }
 
+resource "aws_iam_role_policy_attachment" "worker_observability_read" {
+  role       = aws_iam_role.worker.name
+  policy_arn = var.observability_read_policy_arn
+}
+
 resource "aws_iam_instance_profile" "worker" {
   name = "${local.name_prefix}-worker-profile"
   role = aws_iam_role.worker.name
 }
+
+

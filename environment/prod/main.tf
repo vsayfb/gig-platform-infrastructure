@@ -42,6 +42,7 @@ module "compute" {
 
   opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
   opamp_endpoint_parameter_name   = var.grafana_cloud_opamp_endpoint
+  observability_read_policy_arn   = module.observability.observability_read_policy_arn
 }
 
 
@@ -51,8 +52,6 @@ module "observability" {
   name_prefix                                   = var.name_prefix
   grafana_cloud_opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
   grafana_cloud_opamp_endpoint                  = var.grafana_cloud_opamp_endpoint
-  core_chat_role_name                           = module.compute.core_chat_role_name
-  worker_role_name                              = module.compute.worker_role_name
 }
 
 module "lambda" {
