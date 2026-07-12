@@ -67,3 +67,9 @@ module "lambda" {
   lambda_sqs_consume_policy_arn = module.data.lambda_sqs_consume_policy_arn
   rds_secret_read_policy_arn    = module.data.rds_secret_read_policy_arn
 }
+
+module "deploy" {
+  source = "../../modules/deploy"
+
+  name_prefix = var.name_prefix
+}
