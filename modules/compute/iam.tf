@@ -69,3 +69,22 @@ resource "aws_iam_instance_profile" "worker" {
 }
 
 
+resource "aws_iam_role_policy_attachment" "core_chat_app_deployments_read" {
+  role       = aws_iam_role.core_chat.name
+  policy_arn = var.app_deployments_read_policy_arn
+}
+
+resource "aws_iam_role_policy_attachment" "core_chat_ssm_managed_instance" {
+  role       = aws_iam_role.core_chat.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "worker_app_deployments_read" {
+  role       = aws_iam_role.worker.name
+  policy_arn = var.app_deployments_read_policy_arn
+}
+
+resource "aws_iam_role_policy_attachment" "worker_ssm_managed_instance" {
+  role       = aws_iam_role.worker.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}

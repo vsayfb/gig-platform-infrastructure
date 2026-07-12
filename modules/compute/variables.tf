@@ -140,4 +140,6 @@ variable "opamp_supervisor_version" {
   default = "0.156.0"
 }
 
-
+variable "app_deployments_read_policy_arn" {
+  type = string
+}

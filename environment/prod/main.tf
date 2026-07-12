@@ -43,6 +43,8 @@ module "compute" {
   opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
   opamp_endpoint_parameter_name   = var.grafana_cloud_opamp_endpoint
   observability_read_policy_arn   = module.observability.observability_read_policy_arn
+
+  app_deployments_read_policy_arn = module.deploy.app_deployments_read_policy_arn
 }
 
 
@@ -72,4 +74,7 @@ module "deploy" {
   source = "../../modules/deploy"
 
   name_prefix = var.name_prefix
+
+  github_org   = var.github_org
+  github_repos = var.github_repos
 }
