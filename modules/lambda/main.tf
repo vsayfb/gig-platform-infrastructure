@@ -10,14 +10,6 @@ data "aws_secretsmanager_secret" "firebase_credentials" {
   name = var.firebase_credentials_secret_name
 }
 
-resource "aws_s3_object" "lambda_bootstrap" {
-  bucket = var.lambda_deployment_s3_bucket
-  key    = var.lambda_deployment_s3_key
-
-  source = "${path.module}/bootstrap/placeholder.zip"
-  etag   = filemd5("${path.module}/bootstrap/placeholder.zip")
-}
-
 resource "aws_lambda_function" "notification" {
   function_name = "${local.name_prefix}-notification-lambda"
 
@@ -55,4 +47,3 @@ resource "aws_lambda_event_source_mapping" "notification_events" {
   batch_size       = var.sqs_batch_size
   enabled          = true
 }
-

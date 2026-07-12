@@ -72,3 +72,7 @@ variable "grafana_cloud_opamp_auth_token_parameter_name" {
   type        = string
 }
 
+variable "firebase_credentials_secret_name" {
+  description = "Identity/User of the secret"
+  type        = string
+}

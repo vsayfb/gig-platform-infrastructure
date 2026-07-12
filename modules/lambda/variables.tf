@@ -41,15 +41,12 @@ variable "firebase_credentials_secret_name" {
 
 # Function config
 
-variable "lambda_deployment_s3_bucket" {
-  description = "S3 bucket holding the deployment package."
+variable "lambda_deployment_s3_key" {
+  description = "S3 key of the deployment package, within this module's own dedicated deployments bucket."
   type        = string
+  default     = "notification-lambda/bootstrap.zip"
 }
 
-variable "lambda_deployment_s3_key" {
-  description = "S3 key of the deployment package (a zip containing a 'bootstrap' binary)."
-  type        = string
-}
 
 variable "runtime" {
   description = "provided.al2023 - Go compiles to a custom-runtime binary named 'bootstrap'."

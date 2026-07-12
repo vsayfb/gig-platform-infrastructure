@@ -52,3 +52,17 @@ module "observability" {
   grafana_cloud_opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
   grafana_cloud_opamp_endpoint                  = var.grafana_cloud_opamp_endpoint
 }
+
+module "lambda" {
+  source = "../../modules/lambda"
+
+  name_prefix = var.name_prefix
+
+  firebase_credentials_secret_name = var.firebase_credentials_secret_name
+  compute_subnet_id                = module.network.compute_subnet_id
+  lambda_sg_id                     = module.network.lambda_sg_id
+
+  notification_events_queue_arn = module.data.notification_events_queue_arn
+  lambda_sqs_consume_policy_arn = module.data.lambda_sqs_consume_policy_arn
+  rds_secret_read_policy_arn    = module.data.rds_secret_read_policy_arn
+}
