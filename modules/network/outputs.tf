@@ -57,3 +57,8 @@ output "nat_instance_private_ip" {
   description = "Private IP of the NAT instance inside the VPC."
   value       = aws_instance.nat.private_ip
 }
+
+output "lambda_sg_id" {
+  value = aws_security_group.lambda.id
+}
+
