@@ -66,3 +66,10 @@ UNIT
 
 systemctl daemon-reload
 systemctl enable --now otel-supervisor
+
+dnf install -y ruby wget
+cd /tmp
+wget -q "https://aws-codedeploy-${aws_region}.s3.${aws_region}.amazonaws.com/latest/install"
+chmod +x ./install
+./install auto
+systemctl enable --now codedeploy-agent
