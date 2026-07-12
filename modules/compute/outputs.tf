@@ -17,3 +17,11 @@ output "core_chat_role_arn" {
 output "worker_role_arn" {
   value = aws_iam_role.worker.arn
 }
+
+output "core_chat_role_name" {
+  value = aws_iam_role.core_chat.name
+}
+
+output "worker_role_name" {
+  value = aws_iam_role.worker.name
+}
