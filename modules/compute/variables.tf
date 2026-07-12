@@ -1,3 +1,8 @@
+variable "aws_region" {
+  description = "AWS region for all resources."
+  type        = string
+}
+
 variable "name_prefix" {
   type = string
 }
@@ -106,3 +111,27 @@ variable "health_check_path" {
   type        = string
   default     = "/health"
 }
+
+# OTel Collector / OpAMP Supervisor
+
+variable "opamp_endpoint_parameter_name" {
+  description = "Grafana Cloud Fleet Management OpAMP endpoint."
+  type        = string
+}
+
+variable "opamp_auth_token_parameter_name" {
+  description = "Name of the SSM SecureString parameter holding the OpAMP Authorization header value."
+  type        = string
+}
+
+variable "otel_collector_version" {
+  type    = string
+  default = "0.156.0"
+}
+
+variable "opamp_supervisor_version" {
+  type    = string
+  default = "0.156.0"
+}
+
+

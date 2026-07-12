@@ -24,6 +24,7 @@ module "data" {
 module "compute" {
   source = "../../modules/compute"
 
+  aws_region  = var.aws_region
   name_prefix = var.name_prefix
 
   vpc_id                 = module.network.vpc_id
@@ -38,7 +39,11 @@ module "compute" {
   worker_sqs_access_policy_arn = module.data.worker_sqs_access_policy_arn
 
   ssh_key_name = var.ssh_key_name
+
+  opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
+  opamp_endpoint_parameter_name   = var.grafana_cloud_opamp_endpoint
 }
+
 
 module "observability" {
   source = "../../modules/observability"
