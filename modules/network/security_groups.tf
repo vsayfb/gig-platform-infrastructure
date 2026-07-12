@@ -133,3 +133,43 @@ resource "aws_security_group_rule" "rds_ingress_from_private" {
   security_group_id        = aws_security_group.rds.id
   source_security_group_id = aws_security_group.private_services.id
 }
+
+resource "aws_security_group" "lambda" {
+  name        = "${local.name_prefix}-lambda-sg"
+  description = "Notification Lambda - VPC-attached, egress-only (RDS + Firebase via NAT)"
+  vpc_id      = aws_vpc.main.id
+
+  tags = merge(local.common_tags, {
+    Name = "${local.name_prefix}-lambda-sg"
+  })
+}
+
+resource "aws_security_group_rule" "lambda_egress_rds" {
+  description              = "Postgres to RDS"
+  type                     = "egress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.lambda.id
+  source_security_group_id = aws_security_group.rds.id
+}
+
+resource "aws_security_group_rule" "lambda_egress_https" {
+  description       = "HTTPS out - Firebase push"
+  type              = "egress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.lambda.id
+}
+
+resource "aws_security_group_rule" "rds_ingress_from_lambda" {
+  description              = "Postgres from Notification Lambda"
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.rds.id
+  source_security_group_id = aws_security_group.lambda.id
+}
