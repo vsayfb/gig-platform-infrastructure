@@ -72,6 +72,11 @@ variable "grafana_cloud_opamp_auth_token_parameter_name" {
   type        = string
 }
 
+variable "grafana_cloud_otlp_write_key_parameter_name" {
+  description = "Name of the SSM SecureString parameter holding the value of write key."
+  type        = string
+}
+
 variable "firebase_credentials_secret_name" {
   description = "Identity/User of the secret"
   type        = string

@@ -11,15 +11,16 @@ data "aws_ami" "al2023" {
     name   = "virtualization-type"
     values = ["hvm"]
   }
+
 }
 
 locals {
   bootstrap_vars_base = {
-    aws_region                       = var.aws_region
-    opamp_endpoint_parameter_name    = var.opamp_endpoint_parameter_name
-    opamp_auth_token_parameter_name  = var.opamp_auth_token_parameter_name
-    otel_collector_version           = var.otel_collector_version
-    opamp_supervisor_version         = var.opamp_supervisor_version
+    aws_region                      = var.aws_region
+    opamp_endpoint_parameter_name   = var.opamp_endpoint_parameter_name
+    opamp_auth_token_parameter_name = var.opamp_auth_token_parameter_name
+    otlp_write_key_parameter_name   = var.otlp_write_key_parameter_name
+    otel_collector_version          = var.otel_collector_version
   }
 }
 
@@ -36,6 +37,12 @@ resource "aws_instance" "core_chat" {
     { service_name = "core-chat" }
   ))
 
+  root_block_device {
+    volume_size           = 8
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
+
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-core-chat" })
 }
 
@@ -51,6 +58,12 @@ resource "aws_instance" "worker" {
     local.bootstrap_vars_base,
     { service_name = "worker" }
   ))
+
+  root_block_device {
+    volume_size           = 8
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
 
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-worker" })
 }

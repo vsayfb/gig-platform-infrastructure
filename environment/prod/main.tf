@@ -43,6 +43,7 @@ module "compute" {
   opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
   opamp_endpoint_parameter_name   = var.grafana_cloud_opamp_endpoint
   observability_read_policy_arn   = module.observability.observability_read_policy_arn
+  otlp_write_key_parameter_name   = var.grafana_cloud_otlp_write_key_parameter_name
 
   app_deployments_read_policy_arn = module.deploy.app_deployments_read_policy_arn
 }

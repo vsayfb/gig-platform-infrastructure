@@ -130,6 +130,10 @@ variable "opamp_auth_token_parameter_name" {
   type        = string
 }
 
+variable "otlp_write_key_parameter_name" {
+  type = string
+}
+
 variable "otel_collector_version" {
   type    = string
   default = "0.156.0"
@@ -137,7 +141,7 @@ variable "otel_collector_version" {
 
 variable "opamp_supervisor_version" {
   type    = string
-  default = "0.156.0"
+  default = "0.23.0"
 }
 
 variable "app_deployments_read_policy_arn" {
