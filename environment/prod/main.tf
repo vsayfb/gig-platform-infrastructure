@@ -41,7 +41,7 @@ module "compute" {
   ssh_key_name = var.ssh_key_name
 
   opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
-  opamp_endpoint_parameter_name   = var.grafana_cloud_opamp_endpoint
+  opamp_endpoint_parameter_name   = module.observability.opamp_endpoint_parameter_name
   observability_read_policy_arn   = module.observability.observability_read_policy_arn
   otlp_write_key_parameter_name   = var.grafana_cloud_otlp_write_key_parameter_name
 
