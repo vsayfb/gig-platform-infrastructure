@@ -43,5 +43,10 @@ resource "aws_s3_object" "lambda_bootstrap" {
   key    = var.lambda_deployment_s3_key
 
   source = "${path.module}/bootstrap/placeholder.zip"
-  etag   = filemd5("${path.module}/bootstrap/placeholder.zip")
+
+  # Bootstrap artifact only. The real Lambda package is uploaded by the
+  # deployment pipeline, so Terraform does not track object content changes.
+  lifecycle {
+    ignore_changes = [etag]
+  }
 }

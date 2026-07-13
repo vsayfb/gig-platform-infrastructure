@@ -3,22 +3,43 @@ output "vpc_id" {
 }
 
 output "nat_instance_public_ip" {
-  description = "SSH here to jump into the private subnet."
+  description = "NAT Instance Public IP."
   value       = module.network.nat_instance_public_ip
 }
 
+output "compute_az" {
+  description = "The availability zone where everything actually runs."
+  value       = module.data.compute_az
+}
+
+# RDS
+
+output "rds_db_name" {
+  description = "RDS DB Name."
+  value       = module.data.rds_db_name
+}
+
 output "rds_endpoint" {
-  value = module.data.rds_endpoint
+  description = "RDS DB Endpoint."
+  value       = module.data.rds_endpoint
+}
+
+output "rds_address" {
+  description = "RDS Address."
+  value       = module.data.rds_address
+}
+
+output "rds_port" {
+  description = "RDS Host."
+  value       = module.data.rds_port
+}
+
+output "rds_master_username" {
+  description = "Auto-generated master username."
+  value       = module.data.rds_master_username
 }
 
 output "rds_master_user_secret_arn" {
-  value = module.data.rds_master_user_secret_arn
-}
-
-output "rds_db_name" {
-  value = module.data.rds_db_name
-}
-
-output "compute_az" {
-  value = module.data.compute_az
+  description = "Auto-generated master password."
+  value       = module.data.rds_master_user_secret_arn
 }

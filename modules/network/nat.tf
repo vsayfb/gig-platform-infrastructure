@@ -4,7 +4,7 @@ data "aws_ami" "al2023" {
 
   filter {
     name   = "name"
-    values = ["al2023-ami-*-x86_64"]
+    values = ["al2023-ami-20*-kernel-6.1-x86_64"]
   }
 
   filter {
@@ -21,6 +21,12 @@ resource "aws_instance" "nat" {
   key_name               = var.ssh_key_name
 
   source_dest_check = false
+
+  root_block_device {
+    volume_size           = 8
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
 
   user_data = file("${path.module}/scripts/nat-init.sh")
 

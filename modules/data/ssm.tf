@@ -48,6 +48,14 @@ resource "aws_ssm_parameter" "mongo_db_name" {
   tags = local.common_tags
 }
 
+resource "aws_ssm_parameter" "rds_secret_arn" {
+  name  = "/${local.name_prefix}/app/rds-secret-arn"
+  type  = "String"
+  value = aws_db_instance.main.master_user_secret[0].secret_arn
+}
+
+
+
 resource "aws_ssm_parameter" "groq_ai_endpoint" {
   name = "/${local.name_prefix}/app/groq-ai-endpoint"
   type = "String"
@@ -70,6 +78,12 @@ data "aws_secretsmanager_secret" "jwt_secret" {
   name = var.jwt_secret_name
 }
 
+resource "aws_ssm_parameter" "jwt_secret_arn" {
+  name  = "/${local.name_prefix}/app/jwt-secret-arn"
+  type  = "String"
+  value = data.aws_secretsmanager_secret.jwt_secret.arn
+}
+
 data "aws_secretsmanager_secret" "mongo_db_uri_secret_name" {
   name = var.mongo_db_uri_secret_name
 }
@@ -87,7 +101,7 @@ resource "aws_iam_policy" "app_config_read" {
     Statement = [
       {
         Effect = "Allow"
-        Action = ["ssm:GetParameter", "ssm:GetParameters"]
+        Action = ["ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath"]
         Resource = [
           aws_ssm_parameter.db_host.arn,
           aws_ssm_parameter.db_port.arn,
@@ -97,6 +111,8 @@ resource "aws_iam_policy" "app_config_read" {
           aws_ssm_parameter.mongo_db_name.arn,
           aws_ssm_parameter.groq_ai_model.arn,
           aws_ssm_parameter.groq_ai_endpoint.arn,
+          aws_ssm_parameter.rds_secret_arn.arn,
+          aws_ssm_parameter.jwt_secret_arn.arn
         ]
       }
     ]
