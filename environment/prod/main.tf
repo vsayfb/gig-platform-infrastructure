@@ -19,6 +19,8 @@ module "data" {
 
   db_allocated_storage     = var.db_allocated_storage
   db_backup_retention_days = var.db_backup_retention_days
+  google_client_id         = var.google_client_id
+  jwt_secret_name          = var.jwt_secret_name
 }
 
 module "compute" {
@@ -37,6 +39,8 @@ module "compute" {
   rds_secret_read_policy_arn   = module.data.rds_secret_read_policy_arn
   core_sqs_produce_policy_arn  = module.data.core_sqs_produce_policy_arn
   worker_sqs_access_policy_arn = module.data.worker_sqs_access_policy_arn
+  app_config_read_policy_arn   = module.data.app_config_read_policy_arn
+  jwt_secret_read_policy_arn   = module.data.jwt_secret_read_policy_arn
 
   ssh_key_name = var.ssh_key_name
 

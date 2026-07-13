@@ -147,3 +147,14 @@ variable "opamp_supervisor_version" {
 variable "app_deployments_read_policy_arn" {
   type = string
 }
+
+# Runtime config, from data/
+
+variable "app_config_read_policy_arn" {
+  type = string
+}
+
+variable "jwt_secret_read_policy_arn" {
+  description = "Attached to core_chat only - Worker doesn't do auth."
+  type        = string
+}

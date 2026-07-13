@@ -67,3 +67,37 @@ output "lambda_sqs_consume_policy_arn" {
 output "rds_secret_read_policy_arn" {
   value = aws_iam_policy.rds_secret_read.arn
 }
+
+# Runtime config (SSM)
+
+output "db_host_parameter_name" {
+  value = aws_ssm_parameter.db_host.name
+}
+
+output "db_port_parameter_name" {
+  value = aws_ssm_parameter.db_port.name
+}
+
+output "db_name_parameter_name" {
+  value = aws_ssm_parameter.db_name.name
+}
+
+output "google_client_id_parameter_name" {
+  value = aws_ssm_parameter.google_client_id.name
+}
+
+output "sqs_category_events_queue_url_parameter_name" {
+  value = aws_ssm_parameter.sqs_category_events_queue_url.name
+}
+
+output "jwt_secret_arn" {
+  value = data.aws_secretsmanager_secret.jwt_secret.arn
+}
+
+output "app_config_read_policy_arn" {
+  value = aws_iam_policy.app_config_read.arn
+}
+
+output "jwt_secret_read_policy_arn" {
+  value = aws_iam_policy.jwt_secret_read.arn
+}

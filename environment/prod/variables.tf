@@ -91,3 +91,15 @@ variable "github_repos" {
   description = "Repo names (without org prefix) whose workflows can assume the deploy role."
   type        = list(string)
 }
+
+# Runtime config
+
+variable "google_client_id" {
+  description = "OAuth client ID for Google Sign-In. Not secret."
+  type        = string
+}
+
+variable "jwt_secret_name" {
+  description = "Name of the Secrets Manager secret holding the shared JWT signing secret."
+  type        = string
+}

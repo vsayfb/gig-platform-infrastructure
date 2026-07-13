@@ -111,3 +111,15 @@ variable "sqs_message_retention_seconds" {
   type        = number
   default     = 345600 # 4 days, SQS default
 }
+
+# Runtime config (SSM)
+
+variable "google_client_id" {
+  description = "OAuth client ID for Google Sign-In."
+  type        = string
+}
+
+variable "jwt_secret_name" {
+  description = "Name of the Secrets Manager secret holding the shared JWT signing secret."
+  type        = string
+}
