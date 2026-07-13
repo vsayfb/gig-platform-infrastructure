@@ -105,3 +105,7 @@ output "jwt_secret_read_policy_arn" {
 output "mongodb_uri_secret_read_policy_arn" {
   value = aws_iam_policy.mongo_secret_read.arn
 }
+
+output "groq_ai_secret_read_policy_arn" {
+  value = aws_iam_policy.groq_ai_secret_read.arn
+}

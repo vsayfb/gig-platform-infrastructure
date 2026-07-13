@@ -68,6 +68,11 @@ resource "aws_iam_instance_profile" "worker" {
   role = aws_iam_role.worker.name
 }
 
+resource "aws_iam_role_policy_attachment" "groq_ai_secret_read" {
+  role       = aws_iam_role.worker.name
+  policy_arn = var.groq_ai_secret_read_policy_arn
+}
+
 
 resource "aws_iam_role_policy_attachment" "core_chat_app_deployments_read" {
   role       = aws_iam_role.core_chat.name

@@ -17,12 +17,15 @@ module "data" {
   compute_az         = var.azs[0]
   db_name            = var.db_name
   mongo_db_name      = var.mongo_db_name
+  groq_ai_endpoint   = var.groq_ai_endpoint
+  groq_ai_model      = var.groq_ai_model
 
   db_allocated_storage     = var.db_allocated_storage
   db_backup_retention_days = var.db_backup_retention_days
   google_client_id         = var.google_client_id
   jwt_secret_name          = var.jwt_secret_name
   mongo_db_uri_secret_name = var.mongo_db_uri_secret_name
+  groq_ai_secret_name      = var.groq_ai_secret_name
 }
 
 module "compute" {
@@ -44,7 +47,7 @@ module "compute" {
   app_config_read_policy_arn         = module.data.app_config_read_policy_arn
   jwt_secret_read_policy_arn         = module.data.jwt_secret_read_policy_arn
   mongodb_uri_secret_read_policy_arn = module.data.mongodb_uri_secret_read_policy_arn
-
+  groq_ai_secret_read_policy_arn     = module.data.groq_ai_secret_read_policy_arn
 
   ssh_key_name = var.ssh_key_name
 

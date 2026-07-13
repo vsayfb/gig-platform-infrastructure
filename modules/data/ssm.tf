@@ -22,6 +22,7 @@ resource "aws_ssm_parameter" "db_name" {
   tags = local.common_tags
 }
 
+
 resource "aws_ssm_parameter" "google_client_id" {
   name  = "/${local.name_prefix}/app/google-client-id"
   type  = "String"
@@ -47,12 +48,34 @@ resource "aws_ssm_parameter" "mongo_db_name" {
   tags = local.common_tags
 }
 
+resource "aws_ssm_parameter" "groq_ai_endpoint" {
+  name = "/${local.name_prefix}/app/groq-ai-endpoint"
+  type = "String"
+
+  value = var.groq_ai_endpoint
+
+  tags = local.common_tags
+}
+
+resource "aws_ssm_parameter" "groq_ai_model" {
+  name = "/${local.name_prefix}/app/groq-ai-model"
+  type = "String"
+
+  value = var.groq_ai_model
+
+  tags = local.common_tags
+}
+
 data "aws_secretsmanager_secret" "jwt_secret" {
   name = var.jwt_secret_name
 }
 
 data "aws_secretsmanager_secret" "mongo_db_uri_secret_name" {
   name = var.mongo_db_uri_secret_name
+}
+
+data "aws_secretsmanager_secret" "groq_ai_secret_name" {
+  name = var.groq_ai_secret_name
 }
 
 resource "aws_iam_policy" "app_config_read" {
@@ -71,7 +94,9 @@ resource "aws_iam_policy" "app_config_read" {
           aws_ssm_parameter.db_name.arn,
           aws_ssm_parameter.google_client_id.arn,
           aws_ssm_parameter.sqs_category_events_queue_url.arn,
-          aws_ssm_parameter.mongo_db_name
+          aws_ssm_parameter.mongo_db_name.arn,
+          aws_ssm_parameter.groq_ai_model.arn,
+          aws_ssm_parameter.groq_ai_endpoint.arn,
         ]
       }
     ]
@@ -110,6 +135,24 @@ resource "aws_iam_policy" "mongo_secret_read" {
         Effect   = "Allow"
         Action   = ["secretsmanager:GetSecretValue"]
         Resource = data.aws_secretsmanager_secret.mongo_db_uri_secret_name.arn
+      }
+    ]
+  })
+
+  tags = local.common_tags
+}
+
+resource "aws_iam_policy" "groq_ai_secret_read" {
+  name        = "${local.name_prefix}-groq-ai-secret-read"
+  description = "Read-only access to the Groq API Key"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["secretsmanager:GetSecretValue"]
+        Resource = data.aws_secretsmanager_secret.groq_ai_secret_name.arn
       }
     ]
   })

@@ -129,7 +129,20 @@ variable "mongo_db_name" {
   type        = string
 }
 
+variable "groq_ai_endpoint" {
+  type = string
+}
+
+variable "groq_ai_model" {
+  type = string
+}
+
 variable "mongo_db_uri_secret_name" {
   description = "Name of the Secrets Manager secret holding the MongoDB Atlas connection URI"
+  type        = string
+}
+
+variable "groq_ai_secret_name" {
+  description = "Name of the Secrets Manager secret holding the Groq API Key"
   type        = string
 }

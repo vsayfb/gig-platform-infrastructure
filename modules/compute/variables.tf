@@ -163,3 +163,8 @@ variable "mongodb_uri_secret_read_policy_arn" {
   description = "Attached to chat only."
   type        = string
 }
+
+variable "groq_ai_secret_read_policy_arn" {
+  description = "Attached to worker only."
+  type        = string
+}
