@@ -55,6 +55,7 @@ module "observability" {
   name_prefix                                   = var.name_prefix
   grafana_cloud_opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
   grafana_cloud_opamp_endpoint                  = var.grafana_cloud_opamp_endpoint
+  grafana_cloud_otlp_write_key_parameter_name   = var.grafana_cloud_otlp_write_key_parameter_name
 }
 
 module "lambda" {

@@ -17,3 +17,7 @@ resource "aws_ssm_parameter" "opamp_endpoint" {
 data "aws_ssm_parameter" "opamp_auth_token" {
   name = var.grafana_cloud_opamp_auth_token_parameter_name
 }
+
+data "aws_ssm_parameter" "otlp_write_key" {
+  name = var.grafana_cloud_opamp_auth_token_parameter_name
+}

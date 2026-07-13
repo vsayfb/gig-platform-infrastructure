@@ -1,12 +1,14 @@
 #!/bin/bash
 set -euxo pipefail
 
+
 AWS_REGION="${aws_region}"
 OPAMP_ENDPOINT_PARAMETER_NAME="${opamp_endpoint_parameter_name}"
 OPAMP_AUTH_TOKEN_PARAMETER_NAME="${opamp_auth_token_parameter_name}"
 OTLP_WRITE_KEY_PARAMETER_NAME="${otlp_write_key_parameter_name}"
 OTEL_COLLECTOR_VERSION="${otel_collector_version}"
 SERVICE_NAME="${service_name}"
+
 
 dnf install -y unzip
 
@@ -17,6 +19,7 @@ if ! command -v aws >/dev/null 2>&1; then
     unzip -q /tmp/awscliv2.zip -d /tmp
     /tmp/aws/install
 fi
+
 
 set +x
 OPAMP_ENDPOINT=$(
@@ -56,9 +59,10 @@ curl -sL -o /opt/otel/bin/opampsupervisor \
   "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/cmd/opampsupervisor/v$${OTEL_COLLECTOR_VERSION}/opampsupervisor_$${OTEL_COLLECTOR_VERSION}_linux_amd64"
 chmod +x /opt/otel/bin/opampsupervisor
 
+
 cat >/opt/otel/supervisor.yaml <<EOF
 server:
-  endpoint: "${OPAMP_ENDPOINT%/}/v1/opamp"
+  endpoint: "$${OPAMP_ENDPOINT%/}/v1/opamp"
   headers:
     Authorization: "Basic $OPAMP_AUTH_TOKEN"
 

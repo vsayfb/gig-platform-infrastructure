@@ -11,6 +11,7 @@ resource "aws_iam_policy" "observability_read" {
         Resource = [
           aws_ssm_parameter.opamp_endpoint.arn,
           data.aws_ssm_parameter.opamp_auth_token.arn,
+          data.aws_ssm_parameter.otlp_write_key.arn,
         ]
       },
       {
