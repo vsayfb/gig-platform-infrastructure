@@ -103,3 +103,8 @@ resource "aws_iam_role_policy_attachment" "worker_app_config_read" {
   role       = aws_iam_role.worker.name
   policy_arn = var.app_config_read_policy_arn
 }
+
+resource "aws_iam_role_policy_attachment" "chat_mongo_uri_secret_read" {
+  role       = aws_iam_role.core_chat.name
+  policy_arn = var.mongodb_uri_secret_read_policy_arn
+}

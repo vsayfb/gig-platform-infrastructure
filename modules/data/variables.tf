@@ -123,3 +123,13 @@ variable "jwt_secret_name" {
   description = "Name of the Secrets Manager secret holding the shared JWT signing secret."
   type        = string
 }
+
+variable "mongo_db_name" {
+  description = "Name of the database in Mongo."
+  type        = string
+}
+
+variable "mongo_db_uri_secret_name" {
+  description = "Name of the Secrets Manager secret holding the MongoDB Atlas connection URI"
+  type        = string
+}

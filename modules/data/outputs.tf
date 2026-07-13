@@ -101,3 +101,7 @@ output "app_config_read_policy_arn" {
 output "jwt_secret_read_policy_arn" {
   value = aws_iam_policy.jwt_secret_read.arn
 }
+
+output "mongodb_uri_secret_read_policy_arn" {
+  value = aws_iam_policy.mongo_secret_read.arn
+}

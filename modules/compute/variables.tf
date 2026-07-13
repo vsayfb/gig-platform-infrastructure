@@ -158,3 +158,8 @@ variable "jwt_secret_read_policy_arn" {
   description = "Attached to core_chat only - Worker doesn't do auth."
   type        = string
 }
+
+variable "mongodb_uri_secret_read_policy_arn" {
+  description = "Attached to chat only."
+  type        = string
+}

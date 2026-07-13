@@ -38,8 +38,21 @@ resource "aws_ssm_parameter" "sqs_category_events_queue_url" {
   tags = local.common_tags
 }
 
+resource "aws_ssm_parameter" "mongo_db_name" {
+  name = "/${local.name_prefix}/app/mongo-db-name"
+  type = "String"
+
+  value = var.mongo_db_name
+
+  tags = local.common_tags
+}
+
 data "aws_secretsmanager_secret" "jwt_secret" {
   name = var.jwt_secret_name
+}
+
+data "aws_secretsmanager_secret" "mongo_db_uri_secret_name" {
+  name = var.mongo_db_uri_secret_name
 }
 
 resource "aws_iam_policy" "app_config_read" {
@@ -58,6 +71,7 @@ resource "aws_iam_policy" "app_config_read" {
           aws_ssm_parameter.db_name.arn,
           aws_ssm_parameter.google_client_id.arn,
           aws_ssm_parameter.sqs_category_events_queue_url.arn,
+          aws_ssm_parameter.mongo_db_name
         ]
       }
     ]
@@ -77,6 +91,25 @@ resource "aws_iam_policy" "jwt_secret_read" {
         Effect   = "Allow"
         Action   = ["secretsmanager:GetSecretValue"]
         Resource = data.aws_secretsmanager_secret.jwt_secret.arn
+      }
+    ]
+  })
+
+  tags = local.common_tags
+}
+
+
+resource "aws_iam_policy" "mongo_secret_read" {
+  name        = "${local.name_prefix}-mongo-secret-read"
+  description = "Read-only access to the MongoDB Atlas connection URI"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["secretsmanager:GetSecretValue"]
+        Resource = data.aws_secretsmanager_secret.mongo_db_uri_secret_name.arn
       }
     ]
   })
