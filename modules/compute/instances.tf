@@ -53,7 +53,7 @@ resource "aws_instance" "worker" {
   key_name               = var.ssh_key_name
   iam_instance_profile   = aws_iam_instance_profile.worker.name
 
-  user_data = templatefile("${path.module}/scripts/bootstrap.sh.tpl", merge(
+  user_data = templatefile("${path.module}/scripts/worker_bootstrap.sh.tpl", merge(
     local.bootstrap_vars_base,
     { service_name = "worker" }
   ))
