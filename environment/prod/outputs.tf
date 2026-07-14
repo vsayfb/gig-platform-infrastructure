@@ -56,3 +56,7 @@ output "core_chat_instance_ip" {
 output "worker_instance_ip" {
   value = module.compute.worker_instance_ip
 }
+
+output "app_deployments_bucket_name" {
+  value = module.deploy.app_deployments_bucket_name
+}
