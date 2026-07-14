@@ -1,14 +1,12 @@
 #!/bin/bash
 set -euxo pipefail
 
-
 AWS_REGION="${aws_region}"
 OPAMP_ENDPOINT_PARAMETER_NAME="${opamp_endpoint_parameter_name}"
 OPAMP_AUTH_TOKEN_PARAMETER_NAME="${opamp_auth_token_parameter_name}"
 OTLP_WRITE_KEY_PARAMETER_NAME="${otlp_write_key_parameter_name}"
 OTEL_COLLECTOR_VERSION="${otel_collector_version}"
 SERVICE_NAME="${service_name}"
-
 
 dnf install -y unzip
 
@@ -19,7 +17,6 @@ if ! command -v aws >/dev/null 2>&1; then
     unzip -q /tmp/awscliv2.zip -d /tmp
     /tmp/aws/install
 fi
-
 
 set +x
 OPAMP_ENDPOINT=$(
@@ -59,7 +56,6 @@ curl -sL -o /opt/otel/bin/opampsupervisor \
   "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/cmd/opampsupervisor/v$${OTEL_COLLECTOR_VERSION}/opampsupervisor_$${OTEL_COLLECTOR_VERSION}_linux_amd64"
 chmod +x /opt/otel/bin/opampsupervisor
 
-
 cat >/opt/otel/supervisor.yaml <<EOF
 server:
   endpoint: "$${OPAMP_ENDPOINT%/}/v1/opamp"
@@ -88,7 +84,8 @@ storage:
   directory: /opt/otel/storage
 EOF
 
-cat >/etc/systemd/system/otel-supervisor.service <<EOF
+if [ ! -f /etc/systemd/system/otel-supervisor.service ]; then
+    cat >/etc/systemd/system/otel-supervisor.service <<EOF
 [Unit]
 Description=OpenTelemetry OpAMP Supervisor
 After=network-online.target
@@ -104,7 +101,90 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
+    systemctl daemon-reload
+    systemctl enable --now otel-supervisor
+fi
+
+mkdir -p /opt/deploy
+
+cat >/opt/deploy/remote-deploy.sh <<'DEPLOYSCRIPT'
+#!/bin/bash
+set -euo pipefail
+
+APP_DIR="/opt/app/$${SERVICE_NAME}"
+RELEASE_DIR="$${APP_DIR}/releases/$(date +%Y%m%d%H%M%S)"
+CURRENT_LINK="$${APP_DIR}/current"
+PREVIOUS_LINK="$${APP_DIR}/previous"
+UNIT_NAME="$${SERVICE_NAME}.service"
+
+mkdir -p "$${RELEASE_DIR}"
+
+aws s3 cp "s3://$${S3_BUCKET}/$${S3_KEY}" "$${RELEASE_DIR}/$${BINARY_NAME}"
+chmod +x "$${RELEASE_DIR}/$${BINARY_NAME}"
+
+if [ -L "$${CURRENT_LINK}" ]; then
+  ln -sfn "$(readlink -f "$${CURRENT_LINK}")" "$${PREVIOUS_LINK}"
+fi
+
+ln -sfn "$${RELEASE_DIR}" "$${CURRENT_LINK}"
+
+cat > "/etc/systemd/system/$${UNIT_NAME}" <<UNIT
+[Unit]
+Description=worker
+After=network-online.target otel-supervisor.service
+Wants=network-online.target otel-supervisor.service
+
+[Service]
+Type=simple
+WorkingDirectory=$${CURRENT_LINK}
+ExecStart=$${CURRENT_LINK}/$${BINARY_NAME}
+
+Environment=APP_ENV=production
+Environment=AWS_REGION=${aws_region}
+Environment=OTEL_COLLECTOR_ADDR=localhost:4317
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
 systemctl daemon-reload
-systemctl enable --now otel-supervisor
+systemctl enable "$${UNIT_NAME}"
+
+echo "Checking OpenTelemetry Collector..."
+
+systemctl is-active --quiet otel-supervisor || {
+  echo "otel-supervisor is not running"
+  exit 1
+}
+
+ss -ltn | grep -q ':4317 ' || {
+  echo "Collector is not listening on localhost:4317"
+  exit 1
+}
+
+systemctl restart "$${UNIT_NAME}"
+
+sleep 5
+
+if curl -sf "http://localhost:$${PORT}$${HEALTH_PATH}" >/dev/null; then
+  echo "Health check passed - deploy successful."
+
+  ls -1dt "$${APP_DIR}"/releases/*/ | tail -n +6 | xargs -r rm -rf
+else
+  echo "Health check FAILED - rolling back."
+
+  if [ -L "$${PREVIOUS_LINK}" ]; then
+    ln -sfn "$(readlink -f "$${PREVIOUS_LINK}")" "$${CURRENT_LINK}"
+    systemctl restart "$${UNIT_NAME}"
+  fi
+
+  exit 1
+fi
+DEPLOYSCRIPT
+
+chmod +x /opt/deploy/remote-deploy.sh
 
 echo "Installation complete."

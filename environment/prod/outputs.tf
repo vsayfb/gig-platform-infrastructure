@@ -43,3 +43,8 @@ output "rds_master_user_secret_arn" {
   description = "Auto-generated master password."
   value       = module.data.rds_master_user_secret_arn
 }
+
+output "alb_dns_name" {
+  description = "ALB DNS name"
+  value       = module.compute.alb_dns_name
+}

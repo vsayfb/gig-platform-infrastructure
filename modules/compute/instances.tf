@@ -42,7 +42,10 @@ resource "aws_instance" "core_chat" {
     delete_on_termination = true
   }
 
-  tags = merge(local.common_tags, { Name = "${local.name_prefix}-core-chat" })
+  tags = merge(local.common_tags, {
+    Name    = "${local.name_prefix}-core-chat"
+    Service = "core-chat"
+  })
 }
 
 resource "aws_instance" "worker" {
@@ -64,5 +67,8 @@ resource "aws_instance" "worker" {
     delete_on_termination = true
   }
 
-  tags = merge(local.common_tags, { Name = "${local.name_prefix}-worker" })
+  tags = merge(local.common_tags, {
+    Name    = "${local.name_prefix}-worker"
+    Service = "worker"
+  })
 }
