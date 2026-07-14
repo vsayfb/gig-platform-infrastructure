@@ -134,6 +134,16 @@ resource "aws_security_group_rule" "rds_ingress_from_private" {
   source_security_group_id = aws_security_group.private_services.id
 }
 
+resource "aws_security_group_rule" "private_services_egress_postgres" {
+  description              = "Postgres out to RDS"
+  type                     = "egress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.private_services.id
+  source_security_group_id = aws_security_group.rds.id
+}
+
 resource "aws_security_group" "lambda" {
   name        = "${local.name_prefix}-lambda-sg"
   description = "Notification Lambda - VPC-attached, egress-only (RDS + Firebase via NAT)"
