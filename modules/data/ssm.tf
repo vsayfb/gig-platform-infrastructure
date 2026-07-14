@@ -54,8 +54,6 @@ resource "aws_ssm_parameter" "rds_secret_arn" {
   value = aws_db_instance.main.master_user_secret[0].secret_arn
 }
 
-
-
 resource "aws_ssm_parameter" "groq_ai_endpoint" {
   name = "/${local.name_prefix}/app/groq-ai-endpoint"
   type = "String"
@@ -88,8 +86,20 @@ data "aws_secretsmanager_secret" "mongo_db_uri_secret_name" {
   name = var.mongo_db_uri_secret_name
 }
 
+resource "aws_ssm_parameter" "mongo_uri_secret_arn" {
+  name  = "/${local.name_prefix}/app/mongo-uri-secret-arn"
+  type  = "String"
+  value = data.aws_secretsmanager_secret.mongo_db_uri_secret_name.arn
+}
+
 data "aws_secretsmanager_secret" "groq_ai_secret_name" {
   name = var.groq_ai_secret_name
+}
+
+resource "aws_ssm_parameter" "groq_api_key_secret_arn" {
+  name  = "/${local.name_prefix}/app/groq-api-key-secret-arn"
+  type  = "String"
+  value = data.aws_secretsmanager_secret.groq_ai_secret_name.arn
 }
 
 resource "aws_iam_policy" "app_config_read" {
@@ -109,8 +119,10 @@ resource "aws_iam_policy" "app_config_read" {
           aws_ssm_parameter.google_client_id.arn,
           aws_ssm_parameter.sqs_category_events_queue_url.arn,
           aws_ssm_parameter.mongo_db_name.arn,
+          aws_ssm_parameter.mongo_uri_secret_arn.arn,
           aws_ssm_parameter.groq_ai_model.arn,
           aws_ssm_parameter.groq_ai_endpoint.arn,
+          aws_ssm_parameter.groq_api_key_secret_arn.arn,
           aws_ssm_parameter.rds_secret_arn.arn,
           aws_ssm_parameter.jwt_secret_arn.arn
         ]
