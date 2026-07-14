@@ -24,6 +24,16 @@ resource "aws_iam_role_policy_attachment" "lambda_rds_secret" {
   policy_arn = var.rds_secret_read_policy_arn
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_app_config_read" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = var.app_config_read_policy_arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_observability_read" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = var.observability_read_policy_arn
+}
+
 resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {
   role       = aws_iam_role.lambda.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"

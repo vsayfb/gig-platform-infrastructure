@@ -81,6 +81,9 @@ module "lambda" {
   notification_events_queue_arn = module.data.notification_events_queue_arn
   lambda_sqs_consume_policy_arn = module.data.lambda_sqs_consume_policy_arn
   rds_secret_read_policy_arn    = module.data.rds_secret_read_policy_arn
+  app_config_read_policy_arn    = module.data.app_config_read_policy_arn
+  observability_read_policy_arn = module.observability.observability_read_policy_arn
+
 }
 
 module "deploy" {
@@ -90,4 +93,7 @@ module "deploy" {
 
   github_org   = var.github_org
   github_repos = var.github_repos
+
+  lambda_function_arn           = module.lambda.function_arn
+  lambda_deployments_bucket_arn = module.lambda.deployments_bucket_arn
 }

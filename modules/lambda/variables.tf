@@ -65,7 +65,7 @@ variable "memory_size" {
 }
 
 variable "timeout_seconds" {
-  description = "Must stay under the SQS queue's visibility_timeout_seconds (90s in data/), or a slow invocation risks the message becoming visible again mid-processing and being double-delivered."
+  description = "Must stay under the SQS queue's visibility_timeout_seconds (90s in data/)."
   type        = number
   default     = 60
 }
@@ -74,4 +74,14 @@ variable "sqs_batch_size" {
   description = "Max messages per Lambda invocation from the event source mapping."
   type        = number
   default     = 10
+}
+
+variable "app_config_read_policy_arn" {
+  description = "From data/ - Lambda writes to RDS."
+  type        = string
+}
+
+variable "observability_read_policy_arn" {
+  description = "From observability only needed if Lambda ships its own telemetry rather than relying on CloudWatch alone."
+  type        = string
 }

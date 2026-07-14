@@ -64,6 +64,18 @@ resource "aws_iam_role_policy" "github_actions_deploy" {
           "ec2:DescribeInstances"
         ]
         Resource = "*"
+      },
+      {
+        Sid      = "UploadLambdaArtifact"
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = "${var.lambda_deployments_bucket_arn}/*"
+      },
+      {
+        Sid      = "DeployLambdaCode"
+        Effect   = "Allow"
+        Action   = ["lambda:UpdateFunctionCode", "lambda:GetFunction"]
+        Resource = var.lambda_function_arn
       }
     ]
   })

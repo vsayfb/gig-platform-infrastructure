@@ -28,3 +28,15 @@ variable "github_repos" {
   description = "Repo names (without org prefix) whose workflows can assume the deploy role."
   type        = list(string)
 }
+
+# Lambda deploy
+
+variable "lambda_function_arn" {
+  description = "From lambda/ - lets the GitHub Actions role call UpdateFunctionCode on this specific function only."
+  type        = string
+}
+
+variable "lambda_deployments_bucket_arn" {
+  description = "From lambda/ - its OWN dedicated bucket, separate from this module's app_deployments bucket."
+  type        = string
+}
