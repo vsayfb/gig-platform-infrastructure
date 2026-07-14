@@ -39,6 +39,14 @@ resource "aws_ssm_parameter" "sqs_category_events_queue_url" {
   tags = local.common_tags
 }
 
+resource "aws_ssm_parameter" "sqs_notification_events_queue_url" {
+  name  = "/${local.name_prefix}/app/sqs-notification-events-queue-url"
+  type  = "String"
+  value = aws_sqs_queue.notification_events.url
+
+  tags = local.common_tags
+}
+
 resource "aws_ssm_parameter" "mongo_db_name" {
   name = "/${local.name_prefix}/app/mongo-db-name"
   type = "String"
@@ -118,6 +126,7 @@ resource "aws_iam_policy" "app_config_read" {
           aws_ssm_parameter.db_name.arn,
           aws_ssm_parameter.google_client_id.arn,
           aws_ssm_parameter.sqs_category_events_queue_url.arn,
+          aws_ssm_parameter.sqs_notification_events_queue_url.arn,
           aws_ssm_parameter.mongo_db_name.arn,
           aws_ssm_parameter.mongo_uri_secret_arn.arn,
           aws_ssm_parameter.groq_ai_model.arn,

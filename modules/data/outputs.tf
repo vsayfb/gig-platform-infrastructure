@@ -90,6 +90,10 @@ output "sqs_category_events_queue_url_parameter_name" {
   value = aws_ssm_parameter.sqs_category_events_queue_url.name
 }
 
+output "sqs_notification_events_queue_url_parameter_name" {
+  value = aws_ssm_parameter.sqs_notification_events_queue_url.name
+}
+
 output "jwt_secret_arn" {
   value = data.aws_secretsmanager_secret.jwt_secret.arn
 }
