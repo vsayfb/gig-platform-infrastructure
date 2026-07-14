@@ -48,3 +48,11 @@ output "alb_dns_name" {
   description = "ALB DNS name"
   value       = module.compute.alb_dns_name
 }
+
+output "core_chat_instance_ip" {
+  value = module.compute.core_chat_instance_ip
+}
+
+output "worker_instance_ip" {
+  value = module.compute.worker_instance_ip
+}

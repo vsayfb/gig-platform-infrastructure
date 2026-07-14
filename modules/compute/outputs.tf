@@ -10,6 +10,15 @@ output "worker_instance_id" {
   value = aws_instance.worker.id
 }
 
+output "core_chat_instance_ip" {
+  value = aws_instance.core_chat.private_ip
+}
+
+output "worker_instance_ip" {
+  value = aws_instance.worker.private_ip
+}
+
+
 output "core_chat_role_arn" {
   value = aws_iam_role.core_chat.arn
 }
