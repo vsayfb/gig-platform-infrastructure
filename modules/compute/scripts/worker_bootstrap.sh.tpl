@@ -50,10 +50,12 @@ mkdir -p /opt/otel/bin /opt/otel/storage
 
 curl -sL "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v$${OTEL_COLLECTOR_VERSION}/otelcol-contrib_$${OTEL_COLLECTOR_VERSION}_linux_amd64.tar.gz" \
   | tar -xz -C /opt/otel/bin otelcol-contrib
+
 mv /opt/otel/bin/otelcol-contrib /opt/otel/bin/otelcontribcol_linux_amd64
 
 curl -sL -o /opt/otel/bin/opampsupervisor \
   "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/cmd/opampsupervisor/v$${OTEL_COLLECTOR_VERSION}/opampsupervisor_$${OTEL_COLLECTOR_VERSION}_linux_amd64"
+
 chmod +x /opt/otel/bin/opampsupervisor
 
 cat >/opt/otel/supervisor.yaml <<EOF
@@ -105,20 +107,6 @@ EOF
     systemctl enable --now otel-supervisor
 fi
 
-curl -fsSL https://ollama.com/install.sh | sh
-
-for i in $(seq 1 30); do
-  systemctl is-active --quiet ollama && break
-  sleep 2
-done
-
-systemctl is-active --quiet ollama || {
-  echo "ollama service failed to start"
-  exit 1
-}
-
-ollama pull all-minilm:l12-v2
-
 mkdir -p /opt/deploy
 
 cat >/opt/deploy/remote-deploy.sh <<'DEPLOYSCRIPT'
@@ -137,7 +125,7 @@ aws s3 cp "s3://$${S3_BUCKET}/$${S3_KEY}" "$${RELEASE_DIR}/$${BINARY_NAME}"
 chmod +x "$${RELEASE_DIR}/$${BINARY_NAME}"
 
 if [ -L "$${CURRENT_LINK}" ]; then
-  ln -sfn "$(readlink -f "$${CURRENT_LINK}")" "$${PREVIOUS_LINK}"
+    ln -sfn "$(readlink -f "$${CURRENT_LINK}")" "$${PREVIOUS_LINK}"
 fi
 
 ln -sfn "$${RELEASE_DIR}" "$${CURRENT_LINK}"
@@ -170,13 +158,13 @@ systemctl enable "$${UNIT_NAME}"
 echo "Checking OpenTelemetry Collector..."
 
 systemctl is-active --quiet otel-supervisor || {
-  echo "otel-supervisor is not running"
-  exit 1
+    echo "otel-supervisor is not running"
+    exit 1
 }
 
 ss -ltn | grep -q ':4317 ' || {
-  echo "Collector is not listening on localhost:4317"
-  exit 1
+    echo "Collector is not listening on localhost:4317"
+    exit 1
 }
 
 systemctl restart "$${UNIT_NAME}"
@@ -184,21 +172,84 @@ systemctl restart "$${UNIT_NAME}"
 sleep 5
 
 if curl -sf "http://localhost:$${PORT}$${HEALTH_PATH}" >/dev/null; then
-  echo "Health check passed - deploy successful."
+    echo "Health check passed - deploy successful."
 
-  ls -1dt "$${APP_DIR}"/releases/*/ | tail -n +6 | xargs -r rm -rf
+    ls -1dt "$${APP_DIR}"/releases/*/ | tail -n +6 | xargs -r rm -rf
 else
-  echo "Health check FAILED - rolling back."
+    echo "Health check FAILED - rolling back."
 
-  if [ -L "$${PREVIOUS_LINK}" ]; then
-    ln -sfn "$(readlink -f "$${PREVIOUS_LINK}")" "$${CURRENT_LINK}"
-    systemctl restart "$${UNIT_NAME}"
-  fi
+    if [ -L "$${PREVIOUS_LINK}" ]; then
+        ln -sfn "$(readlink -f "$${PREVIOUS_LINK}")" "$${CURRENT_LINK}"
+        systemctl restart "$${UNIT_NAME}"
+    fi
 
-  exit 1
+    exit 1
 fi
 DEPLOYSCRIPT
 
 chmod +x /opt/deploy/remote-deploy.sh
+
+cat >/usr/local/bin/install-ollama.sh <<'EOF'
+#!/bin/bash
+set -euxo pipefail
+
+if ! command -v ollama >/dev/null 2>&1; then
+    curl -fsSL https://ollama.com/install.sh | sh
+fi
+
+systemctl daemon-reload
+
+systemctl enable ollama
+
+if ! systemctl is-active --quiet ollama; then
+    systemctl start ollama
+fi
+
+for i in $(seq 1 60); do
+    if systemctl is-active --quiet ollama; then
+        break
+    fi
+    sleep 2
+done
+
+systemctl is-active --quiet ollama || {
+    echo "ollama failed to start"
+    exit 1
+}
+
+OLLAMA_HOME="$(getent passwd ollama | cut -d: -f6)"
+
+sudo -u ollama env HOME="$OLLAMA_HOME" ollama list >/dev/null
+
+if ! sudo -u ollama env HOME="$OLLAMA_HOME" ollama list | awk 'NR>1 {print $1}' | grep -qx 'all-minilm:l12-v2'; then
+    sudo -u ollama env HOME="$OLLAMA_HOME" ollama pull all-minilm:l12-v2
+else
+    echo "Model already present."
+fi
+
+mkdir -p /var/lib/ollama
+touch /var/lib/ollama/.bootstrap-complete
+EOF
+
+chmod +x /usr/local/bin/install-ollama.sh
+
+cat >/etc/systemd/system/install-ollama.service <<'EOF'
+[Unit]
+Description=Bootstrap Ollama
+After=network-online.target
+Wants=network-online.target
+
+ConditionPathExists=!/var/lib/ollama/.bootstrap-complete
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/install-ollama.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable --now install-ollama.service
 
 echo "Installation complete."
