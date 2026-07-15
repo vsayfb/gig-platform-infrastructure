@@ -10,6 +10,12 @@ data "aws_secretsmanager_secret" "firebase_credentials" {
   name = var.firebase_credentials_secret_name
 }
 
+resource "aws_ssm_parameter" "firebase_credentials_secret_arn" {
+  name  = "/${local.name_prefix}/app/firebase-credentials-arn"
+  type  = "String"
+  value = data.aws_secretsmanager_secret.firebase_credentials.arn
+}
+
 resource "aws_lambda_function" "notification" {
   function_name = "${local.name_prefix}-notification-lambda"
 
