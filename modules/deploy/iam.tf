@@ -41,11 +41,14 @@ resource "aws_iam_role_policy" "github_actions_deploy" {
 
   policy = jsonencode({
     Version = "2012-10-17"
+
     Statement = [
       {
-        Sid      = "UploadArtifact"
-        Effect   = "Allow"
-        Action   = ["s3:PutObject"]
+        Sid    = "UploadArtifact"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject"
+        ]
         Resource = "${aws_s3_bucket.app_deployments.arn}/*"
       },
       {
@@ -53,7 +56,7 @@ resource "aws_iam_role_policy" "github_actions_deploy" {
         Effect = "Allow"
         Action = [
           "ssm:SendCommand",
-          "ssm:GetCommandInvocation",
+          "ssm:GetCommandInvocation"
         ]
         Resource = "*"
       },
@@ -66,15 +69,22 @@ resource "aws_iam_role_policy" "github_actions_deploy" {
         Resource = "*"
       },
       {
-        Sid      = "UploadLambdaArtifact"
-        Effect   = "Allow"
-        Action   = ["s3:PutObject"]
+        Sid    = "UploadLambdaArtifact"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject"
+        ]
         Resource = "${var.lambda_deployments_bucket_arn}/*"
       },
       {
-        Sid      = "DeployLambdaCode"
-        Effect   = "Allow"
-        Action   = ["lambda:UpdateFunctionCode", "lambda:GetFunction"]
+        Sid    = "DeployLambdaCode"
+        Effect = "Allow"
+        Action = [
+          "lambda:UpdateFunctionCode",
+          "lambda:GetFunction",
+          "lambda:GetFunctionConfiguration"
+        ]
         Resource = var.lambda_function_arn
       }
     ]

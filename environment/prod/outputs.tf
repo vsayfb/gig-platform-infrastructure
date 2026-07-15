@@ -60,3 +60,15 @@ output "worker_instance_ip" {
 output "app_deployments_bucket_name" {
   value = module.deploy.app_deployments_bucket_name
 }
+
+output "lambda_deployments_bucket_name" {
+  value = module.lambda.deployments_bucket_name
+}
+
+output "lambda_function_name" {
+  value = module.lambda.function_name
+}
+
+output "github_actions_deploy_role_arn" {
+  value = module.deploy.github_actions_deploy_role_arn
+}
