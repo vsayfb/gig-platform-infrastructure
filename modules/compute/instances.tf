@@ -28,7 +28,6 @@ resource "aws_instance" "core_chat" {
   instance_type          = var.core_chat_instance_type
   subnet_id              = var.compute_subnet_id
   vpc_security_group_ids = [var.private_services_sg_id]
-  key_name               = var.ssh_key_name
   iam_instance_profile   = aws_iam_instance_profile.core_chat.name
 
   user_data = templatefile("${path.module}/scripts/bootstrap.sh.tpl", merge(
@@ -53,7 +52,6 @@ resource "aws_instance" "worker" {
   instance_type          = var.worker_instance_type
   subnet_id              = var.compute_subnet_id
   vpc_security_group_ids = [var.private_services_sg_id]
-  key_name               = var.ssh_key_name
   iam_instance_profile   = aws_iam_instance_profile.worker.name
 
   user_data = templatefile("${path.module}/scripts/worker_bootstrap.sh.tpl", merge(

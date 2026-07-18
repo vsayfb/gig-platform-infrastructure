@@ -48,10 +48,6 @@ variable "app_port_range" {
   }
 }
 
-variable "ssh_key_name" {
-  type = string
-}
-
 variable "core_chat_instance_type" {
   type    = string
   default = "t3.small"

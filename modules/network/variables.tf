@@ -30,16 +30,6 @@ variable "nat_instance_type" {
   default     = "t3.micro"
 }
 
-variable "ssh_key_name" {
-  description = "EC2 key pair name used to SSH into the NAT instance."
-  type        = string
-}
-
-variable "ssh_allowed_cidr" {
-  description = "CIDR allowed to SSH into the NAT instance."
-  type        = string
-}
-
 variable "app_port_range" {
   description = "Port range on the private-services instance that the ALB is allowed to reach (Core HTTP + Chat WebSocket)."
   type = object({

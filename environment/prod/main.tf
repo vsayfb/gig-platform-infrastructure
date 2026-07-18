@@ -1,11 +1,9 @@
 module "network" {
   source = "../../modules/network"
 
-  name_prefix      = var.name_prefix
-  azs              = var.azs
-  ssh_key_name     = var.ssh_key_name
-  ssh_allowed_cidr = var.ssh_allowed_cidr
-  app_port_range   = var.app_port_range
+  name_prefix    = var.name_prefix
+  azs            = var.azs
+  app_port_range = var.app_port_range
 }
 
 module "data" {
@@ -48,8 +46,6 @@ module "compute" {
   jwt_secret_read_policy_arn         = module.data.jwt_secret_read_policy_arn
   mongodb_uri_secret_read_policy_arn = module.data.mongodb_uri_secret_read_policy_arn
   groq_ai_secret_read_policy_arn     = module.data.groq_ai_secret_read_policy_arn
-
-  ssh_key_name = var.ssh_key_name
 
   opamp_auth_token_parameter_name = var.grafana_cloud_opamp_auth_token_parameter_name
   opamp_endpoint_parameter_name   = module.observability.opamp_endpoint_parameter_name

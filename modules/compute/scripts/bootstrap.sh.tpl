@@ -11,7 +11,7 @@ SERVICE_NAME="${service_name}"
 dnf install -y unzip
 
 if ! command -v aws >/dev/null 2>&1; then
-    curl -s https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip \
+    curl -s https: //awscli.amazonaws.com/awscli-exe-linux-x86_64.zip \
         -o /tmp/awscliv2.zip
 
     unzip -q /tmp/awscliv2.zip -d /tmp
@@ -84,20 +84,24 @@ storage:
   directory: /opt/otel/storage
 EOF
 
-if [ ! -f /etc/systemd/system/otel-supervisor.service ]; then
+if [ ! -f /etc/systemd/system/otel-supervisor.service
+]; then
     cat >/etc/systemd/system/otel-supervisor.service <<EOF
-[Unit]
+[Unit
+]
 Description=OpenTelemetry OpAMP Supervisor
 After=network-online.target
 Wants=network-online.target
 
-[Service]
+[Service
+]
 ExecStart=/opt/otel/bin/opampsupervisor --config=/opt/otel/supervisor.yaml
 WorkingDirectory=/opt/otel
 Restart=always
 RestartSec=5
 
-[Install]
+[Install
+]
 WantedBy=multi-user.target
 EOF
 
@@ -119,34 +123,43 @@ UNIT_NAME="$${SERVICE_NAME}.service"
 
 mkdir -p "$${RELEASE_DIR}"
 
-aws s3 cp "s3://$${S3_BUCKET}/$${S3_KEY}" "$${RELEASE_DIR}/$${BINARY_NAME}"
+aws s3 cp "s3://$${S3_BUCKET}/$${S3_KEY}""$${RELEASE_DIR}/$${BINARY_NAME}"
 chmod +x "$${RELEASE_DIR}/$${BINARY_NAME}"
 
-if [ -L "$${CURRENT_LINK}" ]; then
-  ln -sfn "$(readlink -f "$${CURRENT_LINK}")" "$${PREVIOUS_LINK}"
+if [ -L "$${CURRENT_LINK}"
+]; then
+  ln -sfn "$(readlink -f "$${CURRENT_LINK
+}")""$${PREVIOUS_LINK}"
 fi
 
-ln -sfn "$${RELEASE_DIR}" "$${CURRENT_LINK}"
+ln -sfn "$${RELEASE_DIR}""$${CURRENT_LINK}"
 
 cat > "/etc/systemd/system/$${UNIT_NAME}" <<UNIT
-[Unit]
+[Unit
+]
 Description=worker
 After=network-online.target otel-supervisor.service
 Wants=network-online.target otel-supervisor.service
 
-[Service]
+[Service
+]
 Type=simple
-WorkingDirectory=$${CURRENT_LINK}
-ExecStart=$${CURRENT_LINK}/$${BINARY_NAME}
+WorkingDirectory=$${CURRENT_LINK
+}
+ExecStart=$${CURRENT_LINK
+}/$${BINARY_NAME
+}
 
 Environment=APP_ENV=production
-Environment=AWS_REGION=${aws_region}
-Environment=OTEL_COLLECTOR_ADDR=localhost:4317
+Environment=AWS_REGION=${aws_region
+}
+Environment=OTEL_COLLECTOR_ADDR=localhost: 4317
 
 Restart=always
 RestartSec=5
 
-[Install]
+[Install
+]
 WantedBy=multi-user.target
 UNIT
 
@@ -160,7 +173,7 @@ systemctl is-active --quiet otel-supervisor || {
   exit 1
 }
 
-ss -ltn | grep -q ':4317 ' || {
+ss -ltn | grep -q ': 4317 ' || {
   echo "Collector is not listening on localhost:4317"
   exit 1
 }

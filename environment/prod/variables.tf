@@ -3,6 +3,11 @@ variable "project_name" {
   type        = string
 }
 
+variable "bucket" {
+  description = "Name of the S3 bucket."
+  type        = string
+}
+
 variable "environment" {
   type    = string
   default = "prod"
@@ -23,15 +28,6 @@ variable "azs" {
   type        = list(string)
 }
 
-variable "ssh_key_name" {
-  description = "Existing EC2 key pair name, used for the NAT instance and (tunnelled through it) the private instances."
-  type        = string
-}
-
-variable "ssh_allowed_cidr" {
-  description = "Admin IP allowed to SSH into the NAT instance, as a /32."
-  type        = string
-}
 
 variable "db_name" {
   description = "Initial database name created on the instance."

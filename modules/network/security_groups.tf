@@ -36,22 +36,12 @@ resource "aws_security_group_rule" "alb_egress_to_private_services" {
 
 resource "aws_security_group" "nat" {
   name        = "${local.name_prefix}-nat-sg"
-  description = "NAT instance - forwards private services outbound traffic, allows SSH from admin IP only"
+  description = "NAT instance - outbound Internet access for private subnets."
   vpc_id      = aws_vpc.main.id
 
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}-nat-sg"
   })
-}
-
-resource "aws_security_group_rule" "nat_ssh_from_admin" {
-  description       = "SSH from admin IP for tunnelling into the private subnet"
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = [var.ssh_allowed_cidr]
-  security_group_id = aws_security_group.nat.id
 }
 
 resource "aws_security_group_rule" "nat_egress_all" {
@@ -66,7 +56,7 @@ resource "aws_security_group_rule" "nat_egress_all" {
 
 resource "aws_security_group" "private_services" {
   name        = "${local.name_prefix}-private-services-sg"
-  description = "Core/Chat/Categorization worker - reachable from ALB and via SSH tunnel through NAT instance only"
+  description = "Security group for private application services"
   vpc_id      = aws_vpc.main.id
 
   tags = merge(local.common_tags, {
@@ -112,16 +102,6 @@ resource "aws_security_group_rule" "nat_ingress_from_private" {
   protocol                 = "-1"
   security_group_id        = aws_security_group.nat.id
   source_security_group_id = aws_security_group.private_services.id
-}
-
-resource "aws_security_group_rule" "private_ssh_from_nat" {
-  description              = "SSH tunnelled in from the NAT instance"
-  type                     = "ingress"
-  from_port                = 22
-  to_port                  = 22
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.private_services.id
-  source_security_group_id = aws_security_group.nat.id
 }
 
 resource "aws_security_group_rule" "rds_ingress_from_private" {
